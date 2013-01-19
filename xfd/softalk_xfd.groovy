@@ -6,7 +6,7 @@ if( res.isWorseThan(hudson.model.Result.SUCCESS) ) {
     def find = false;
     manager.build.changeSet.each { cs ->
         cs.items.each {
-            command += "svn:${it.getDisplayName()} ";
+            command += "${it.getDisplayName()} ";
             find = true;
         }
     }

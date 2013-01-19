@@ -7,7 +7,7 @@ if( res.isWorseThan(hudson.model.Result.SUCCESS) ) {
         def command = "softalkw.exe /W:";
         def find = false;
         users.each {
-            command += "svn:${it.getDisplayName()} ";
+            command += "${it.getDisplayName()} ";
             find = true;
         }
         if( find ) {
