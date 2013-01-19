@@ -1,16 +1,28 @@
+import hudson.util.RemotingDiagnostics
+
 def res = manager.build.getResult();
-if( res.isWorseThan(hudson.model.Result.FAILURE) ) {
+if( res.isWorseThan(hudson.model.Result.SUCCESS) ) {
     def users = manager.build.getCulprits();
     if( users != null ) {
-        def command = "softalk.exe /W:"
+        def command = "softalkw.exe /W:";
+        def find = false;
         users.each {
-            manager.listener.logger.println("XFD test");
-            manager.listener.logger.println(it.getDisplayName());
-            command += "svn:${it.getDisplayName()}";
+            command += "svn:${it.getDisplayName()} ";
+            find = true;
         }
-        command += " アウトーーー！";
-        manager.listener.logger.println(command);
-        'softalk.exe /close'.execute();
+        if( find ) {
+            command += " アウトーーー！";
+            manager.listener.logger.println(command);
+
+            def computer = manager.build.getBuiltOn().toComputer();
+            def channel = computer.getChannel();
+            
+            def script = """
+                '${command}'.execute();
+            """
+
+            RemotingDiagnostics.executeGroovy( script, channel );
+        }
     }
 }
 
