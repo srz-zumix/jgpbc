@@ -15,7 +15,7 @@ class OfflineMessage extends org.jvnet.localizer.Localizable {
 }
 
 if( manager.build.getResult().isWorseThan(hudson.model.Result.SUCCESS) ) {
-    def timestr = new Date().format("HH:mm dd/MM/yy z", TimeZone.getTimeZone("UTC"))
+    def timestr = new Date().format("HH:mm dd/MM/yy z", TimeZone.getDefault())
     def msg = "automated offline: ${manager.build.getProject().getDisplayName()}#${manager.build.number} : " + timestr
     def cause = SimpleOfflineCause.create(new OfflineMessage(msg))
     def com = manager.build.getBuiltOn().toComputer()
