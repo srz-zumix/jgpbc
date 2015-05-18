@@ -33,7 +33,7 @@ static print(manager)
   }
 }
 
-static to_offline_caused_by_result(manager, keep_log)
+static to_offline_caused_by_result(manager)
 {
   if( manager.build.getResult().isWorseThan(hudson.model.Result.SUCCESS) ) {
     def timestr = new Date().format("HH:mm dd/MM/yy z", TimeZone.getDefault())
@@ -43,26 +43,17 @@ static to_offline_caused_by_result(manager, keep_log)
     if( com.isOnline() ) {
       com.setTemporarilyOffline(true, cause)
     }
-    if( keep_log ) {
-      if( manager.build.canToggleLogKeep() ) {
-        manager.build.keepLog()
-      }
-    }
   }
 }
 
-static to_offline(manager, message, keep_log)
+static to_offline(manager, message)
 {
-  def timestr = new Date().format("HH:mm dd/MM/yy z", TimeZone.getDefault())
-  def msg = message + timestr
-  def cause = SimpleOfflineCause.create(new OfflineMessage(msg))
-  def com = manager.build.getBuiltOn().toComputer()
-  if( com.isOnline() ) {
-    com.setTemporarilyOffline(true, cause)
-  }
-  if( keep_log ) {
-    if( manager.build.canToggleLogKeep() ) {
-      manager.build.keepLog()
+    def timestr = new Date().format("HH:mm dd/MM/yy z", TimeZone.getDefault())
+    def msg = message + timestr
+    def cause = SimpleOfflineCause.create(new OfflineMessage(msg))
+    def com = manager.build.getBuiltOn().toComputer()
+    if( com.isOnline() ) {
+      com.setTemporarilyOffline(true, cause)
     }
   }
 }
