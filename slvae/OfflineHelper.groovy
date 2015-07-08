@@ -1,18 +1,4 @@
-import hudson.slaves.OfflineCause.SimpleOfflineCause
-
-class OfflineMessage extends org.jvnet.localizer.Localizable {
-  String message
-  OfflineMessage(String msg) {
-    super(null, null, [])
-    this.message = msg
-  }
-  String toString() {
-    this.message
-  }
-  String toString(java.util.Locale l) {
-    toString()
-  }
-}
+import hudson.slaves.OfflineCause
 
 static print(manager)
 {
@@ -29,32 +15,26 @@ static print(manager)
             manager.listener.logger.println("- ${cause}")
             manager.buildUnstable()
         }
-    }
+     }
   }
 }
 
 static to_offline_caused_by_result(manager)
 {
   if( manager.build.getResult().isWorseThan(hudson.model.Result.SUCCESS) ) {
-    def timestr = new Date().format("HH:mm dd/MM/yy z", TimeZone.getDefault())
-    def msg = "automated offline: ${manager.build.getProject().getDisplayName()}#${manager.build.number} : " + timestr
-    def cause = SimpleOfflineCause.create(new OfflineMessage(msg))
+    def msg = "automated offline: ${manager.build.getProject().getDisplayName()}#${manager.build.number}"
     def com = manager.build.getBuiltOn().toComputer()
     if( com.isOnline() ) {
-      com.setTemporarilyOffline(true, cause)
+      com.setTemporarilyOffline(true, new OfflineCause.ByCLI(msg))
     }
   }
 }
 
 static to_offline(manager, message)
 {
-    def timestr = new Date().format("HH:mm dd/MM/yy z", TimeZone.getDefault())
-    def msg = message + timestr
-    def cause = SimpleOfflineCause.create(new OfflineMessage(msg))
-    def com = manager.build.getBuiltOn().toComputer()
-    if( com.isOnline() ) {
-      com.setTemporarilyOffline(true, cause)
-    }
+  def com = manager.build.getBuiltOn().toComputer()
+  if( com.isOnline() ) {
+    com.setTemporarilyOffline(true, new OfflineCause.ByCLI(message))
   }
 }
 
